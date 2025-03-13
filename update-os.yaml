@@ -1,5 +1,5 @@
 ---
-- name: UPDATE OS
+- name: Обновление ОС
   hosts: tred
   become: true
   gather_facts: false
