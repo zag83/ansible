@@ -1,0 +1,28 @@
+---
+- name: Установка ssh ключа на удаленный сервер
+  hosts: srv_nginx
+  gather_facts: False
+
+  tasks:
+    - name: Создать каталог .ssh и назначить права
+      file:
+        path: ~/.ssh
+        state: directory
+        mode: "0700"
+#    - name: Копирование ключ-фаил и назначить права
+#      copy:
+#        src: files/authorized_keys
+#        dest: ~/.ssh/authorized_keys
+#        mode: "0644"
+# копирование ключ файла через шаблон 
+    - name: copy authorized_keys files
+      template: 
+        src: templates/authorized_keys.j2
+        dest: /home/sa/.ssh/authorized_keys
+        mode: "0644"
+
+    - name: Перезапуск службы sshd
+      become: True
+      service:
+        name: sshd
+...
