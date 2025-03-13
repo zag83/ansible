@@ -1,0 +1,16 @@
+---
+- name: СМЕНА ПАРОЛЯ ДЛЯ ЛОКАЛЬНОЙ УЗ
+  hosts: t-Red
+  gather_facts: false
+  become: true
+  vars:
+    loc_user: user
+    loc_passw: "example-password"
+
+  tasks:
+    - name: СМЕНА ПАРОЛЯ
+      user:
+        name: '{{ loc_user }}'
+        password: "{{ loc_passw | password_hash('sha512') }}"
+        update_password: always
+...
