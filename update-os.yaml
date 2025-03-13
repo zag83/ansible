@@ -1,0 +1,46 @@
+---
+- name: UPDATE OS
+  hosts: tred
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Update REDOS
+      async: 45
+      poll: 0
+      yum:
+        update_cache: true
+        name: '*'
+        state: latest
+      register: res_updt
+#      when: os_release == "REDOS"
+    - name: DEBIG
+      debug:
+        msg: "RESULT: {{res_updt}}"
+    - async_status:
+        jid: "{{ res_updt.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 3
+- name: UPDATE OS
+  hosts: tastr
+  become: true
+  tasks:
+    - name: Update Astra
+      async: 45
+      poll: 0
+      apt:
+        upgrade: true
+        update_cache: true
+      register: res_updastra
+#      when: os_release == "AstraLinux"
+    - name: DEBIG
+      debug:
+        msg: "RESULT: {{res_updastra}}"
+    - async_status:
+        jid: "{{ res_updastra.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 100
+      delay: 3
+...
