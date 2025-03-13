@@ -1,0 +1,29 @@
+---
+- name: syslog and rsyslog
+  hosts: tst
+  ignore_unreachable: true
+  become: true
+  vars_promt:
+    - name: "srv"
+      promt: "IP server"
+      default: 192.168.0.1
+      private: false
+    - name: "port"
+      promt: "PORT server"
+      default: 514
+      private: false
+    - name: "prot"
+      promt: "Protocol udp/tcp"
+      default: udp
+      private: false
+
+  pre_tasks:
+    - name: Set OS
+      block:
+        - name: os-release
+          shell: cat /etc/os-release | grep ^NAME | sed 's/"//g' | sed 's/NAME=//g' | awk '{print $1}'
+          register: res_os
+        - set_facts:
+            os_release: "{{ res_os.stdout }}"
+  roles:
+    - log

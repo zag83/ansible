@@ -1,0 +1,9 @@
+---
+- name: astra
+  when: os_release == "Astra"
+  import_tasks: astra.yml
+
+- name: redos
+  when: os_release == "RED"
+  import_tasks: redos.yml
+  

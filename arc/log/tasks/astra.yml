@@ -1,0 +1,33 @@
+---
+- name: install app
+  ignore_errors: true
+  apt:
+    update_cache: no
+    name: "{{ item }}"
+    state: present
+  loop:
+    - audispd-plugins
+    - auditd
+    - syslog-ng
+- name:
+  template:
+    src: templates/etc/syslog-ng/conf.d/soc.j2
+    dest: /etc/syslog-ng/conf.d/soc.conf
+    owner: root
+    group: root
+    mode: '0640'
+  notify: restart syslog-ng
+- name: enabled service
+  ignore_errors: true
+  service:
+    name:
+      - auditd
+      - syslog-ng
+      - syslog
+    enabled: yes
+- name: rotate auditd
+  lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: 'max_log_file_action = '
+    line: max_log_file_action = ROTATE
+...
